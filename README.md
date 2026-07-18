@@ -4,6 +4,9 @@
 
 **Project Description**
 
+<img width="446" height="250" alt="image" src="https://github.com/user-attachments/assets/907ef60d-8d19-493d-88e9-317e0904ab59" />
+
+
 AI Slack Messaging Agent for Text, Audio & Images
 
 The AI Slack Messaging Agent is an intelligent workflow automation project built using n8n, Slack API, and OpenAI GPT-4o Mini. It enables users to interact with an AI assistant directly inside Slack using text messages, voice recordings, and images. The workflow automatically detects the type of incoming message, processes it through the appropriate AI pipeline, and responds within the same Slack conversation thread, creating a seamless and interactive user experience.
