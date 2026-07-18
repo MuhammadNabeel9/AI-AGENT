@@ -251,12 +251,15 @@ The workflow is Active.
 Complete Workflow Flow
 
 User mentions bot in Slack
+
            │
            ▼
      Slack Trigger
+     
            │
            ▼
  Check User & Chat ID
+ 
            │
            ▼
      Message Router
