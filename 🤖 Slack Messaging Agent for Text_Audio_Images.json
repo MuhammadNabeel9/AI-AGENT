@@ -1,0 +1,1099 @@
+{
+  "name": "🤖 Slack Messaging Agent for Text/Audio/Images",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# Receive Slack Message with Webhook",
+        "height": 556,
+        "width": 884
+      },
+      "id": "cf6f64cd-e18c-467c-a5cf-ac0fd086150d",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        864,
+        1088
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# Process Image",
+        "height": 432,
+        "width": 1289,
+        "color": 6
+      },
+      "id": "67c7aab8-1917-4da6-a057-5523f203ef18",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        1488
+      ]
+    },
+    {
+      "parameters": {
+        "trigger": [
+          "app_mention"
+        ],
+        "channelId": {
+          "__rl": true,
+          "value": "C0BHG9CHK3N",
+          "mode": "list",
+          "cachedResultName": "toon-squad-ai-assistant"
+        },
+        "options": {}
+      },
+      "id": "ed084749-41fa-4e57-b097-1e749d500502",
+      "name": "Slack Trigger",
+      "type": "n8n-nodes-base.slackTrigger",
+      "typeVersion": 1,
+      "position": [
+        912,
+        1216
+      ],
+      "webhookId": "d37145f7-39ea-4fd7-9017-2b36263eeaaa",
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18a96c1f-f2a0-4a2a-b789-606763df4423",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              },
+              "leftValue": "={{ $json.user }}",
+              "rightValue": "=B0BHGCMNSJG"
+            },
+            {
+              "id": "2a9b837e-7a2d-464e-8edb-c1493eab1f59",
+              "leftValue": "={{ $json.app_id }}",
+              "rightValue": "=A0BHCK50THQ",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6192a28b-bb79-430a-9855-a9f822a9fcfb",
+      "name": "Check User & Chat ID",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        1216
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.files[0].mimetype }}",
+                    "rightValue": "audio",
+                    "id": "cdf80817-bf78-4a0e-9195-338c7d3f9316"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "342f0883-d959-44a2-b80d-379e39c76218",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.blocks[0].type }}",
+                    "rightValue": "text"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ded3a600-f861-413a-8892-3fc5ea935ecb",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.files[0].mimetype }}",
+                    "rightValue": "image"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "0bcb04ef-3cea-4260-a4ca-2bb2b34b482e",
+      "name": "Message Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1360,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "id": "ff25551e-83f2-47ea-b6dc-83bad2c97aff",
+      "name": "Transcribe Recording",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        2288,
+        688
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "task",
+              "description": "If the message is about about creating a task/todo"
+            },
+            {
+              "category": "other",
+              "description": "If the message is not about creating a task/todo "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2a240cce-1ccf-4875-adb1-f8535e7e594a",
+      "name": "Text Classifier Audio",
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        688
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7faef5a1-e47c-4824-b335-6d52cc3ecde4",
+      "name": "gpt-4o-mini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        880
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a85227b7-f7f8-4d62-bc0d-2560a60b4432",
+              "leftValue": "={{ $json.files[0].mimetype }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1db9de36-a024-41e7-a26f-c9cd27fabc65",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1616,
+        1184
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b37b48ba-8fef-4e6c-bbca-73e6c2e1e0a8",
+              "name": "Text",
+              "type": "string",
+              "value": "={{ $json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "75430508-fb27-4fe5-9a43-a172b48bcad1",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2032,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Task",
+              "description": "If the message is about about creating a task/todo"
+            },
+            {
+              "category": "other",
+              "description": "If the message is not about creating a task/todo"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a08bf542-51d8-4c02-b6b0-a9ebb562000d",
+      "name": "Text Classifier",
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [
+        2656,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7f35e0e3-b2c3-4f5f-bf99-be965de2bc10",
+      "name": "gpt-4o-mini1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        2560,
+        1344
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17989eb0-feca-4631-b5c8-34b1d4a6c72b",
+              "name": "image_file_id",
+              "type": "string",
+              "value": "={{ $json.files[0].id }}"
+            },
+            {
+              "id": "9317d7ae-dffd-4b1f-9a9c-b3cc4f1e0dd3",
+              "name": "caption",
+              "type": "string",
+              "value": "={{ $json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8af18b0e-3d0a-421f-b668-5650a733ed09",
+      "name": "Image Schema",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2032,
+        1648
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "fileId": "={{ $json.image_file_id }}"
+      },
+      "id": "be095da7-0e13-411a-b7f4-7704c1cee5e2",
+      "name": "Get a file",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        2240,
+        1648
+      ],
+      "webhookId": "e6f27c63-40f5-41a6-8864-f221a15dd777",
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url_private_download }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "slackApi",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "a57687c6-0b57-48ca-af6c-c2cad8681721",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2448,
+        1648
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "inputType": "base64",
+        "options": {}
+      },
+      "id": "72a9f0d5-3082-40cd-8c27-a0b8cd9de40b",
+      "name": "Analyze Image",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        2672,
+        1648
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BHG9CHK3N",
+          "mode": "list",
+          "cachedResultName": "toon-squad-ai-assistant"
+        },
+        "text": "This Message Is Not From The Provided Types.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $json.ts }}"
+            }
+          }
+        }
+      },
+      "id": "ef244df6-a5ff-4dca-9757-4056d085c4a2",
+      "name": "Send a message",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        1568,
+        1472
+      ],
+      "webhookId": "9ae8b8c2-f705-4123-9381-e38eaf73305d",
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Process Audio",
+        "height": 429,
+        "width": 1369,
+        "color": 4
+      },
+      "id": "e412ba79-d50d-4487-93b0-3e5005da0ffc",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# Process Text",
+        "height": 429,
+        "width": 1284,
+        "color": 5
+      },
+      "id": "f1251cdf-3174-417d-b8ab-cd18eaa363a8",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        1024
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BHG9CHK3N",
+          "mode": "list",
+          "cachedResultName": "toon-squad-ai-assistant"
+        },
+        "text": "=*The Image Is About:*\n{{ $json.content }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $('Slack Trigger').item.json.ts }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        2880,
+        1648
+      ],
+      "id": "f1572a21-d13e-459c-8801-9194b6550634",
+      "name": "Send a message2",
+      "webhookId": "f2a51449-61e3-40d7-8d68-d4fbec8330a2",
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BHG9CHK3N",
+          "mode": "list",
+          "cachedResultName": "toon-squad-ai-assistant"
+        },
+        "text": "=*To-Do-List*\n{{ $json.text }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $('Slack Trigger').item.json.ts }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        3040,
+        1072
+      ],
+      "id": "77a0aeb9-5dac-4a2e-9f1e-4af61790351a",
+      "name": "Send a message3",
+      "webhookId": "7bba742a-9008-44c4-bca5-d268e39e4659",
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BHG9CHK3N",
+          "mode": "list",
+          "cachedResultName": "toon-squad-ai-assistant"
+        },
+        "text": "={{ $json.text }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $('Slack Trigger').item.json.ts }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        3040,
+        1264
+      ],
+      "id": "9518e64b-fa53-42f8-939a-e5da83c9552f",
+      "name": "Send a message4",
+      "webhookId": "7786539f-95d2-4681-9d72-372171fb6f08",
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        2192,
+        1344
+      ],
+      "id": "3b20316e-ecfa-4822-895a-4aef88ca0037",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an assistant that processes an incoming message and responds in one of two ways depending on its content.\nMessage: {{ $json.Text }}\nFirst, decide whether the message is a request to create a task or to-do item.\nIf it IS a task/to-do request:\n\nConvert it into a clean, professional to-do list.\nFormat each item as a bullet point.\nKeep the wording clear, action oriented, and professional.\nDo not add commentary before or after the list unless it adds useful context.\n\nIf it is NOT a task/to-do request:\nSimply reply to the query as a helpful assistant.\nKeep the reply concise and direct.\nDo not mention to-do lists or ask whether the user wants one.\n\nFormatting rules (apply to every response):\nNever use em dashes.\nFor bold text, use Slack formatting with single asterisks like this, never double asterisks like this.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2240,
+        1168
+      ],
+      "id": "778c708c-d4ea-4885-b553-134d7b4cf706",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BHG9CHK3N",
+          "mode": "list",
+          "cachedResultName": "toon-squad-ai-assistant"
+        },
+        "text": "=*To-Do-List*\n{{ $json.text }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $('Slack Trigger').item.json.ts }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        3184,
+        608
+      ],
+      "id": "7686aeb5-a78f-4a93-a0d8-e7c073cad897",
+      "name": "Send a message5",
+      "webhookId": "7bba742a-9008-44c4-bca5-d268e39e4659",
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BHG9CHK3N",
+          "mode": "list",
+          "cachedResultName": "toon-squad-ai-assistant"
+        },
+        "text": "={{ $json.text }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false,
+          "thread_ts": {
+            "replyValues": {
+              "thread_ts": "={{ $('Slack Trigger').item.json.ts }}"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        3184,
+        800
+      ],
+      "id": "3975706a-b622-4751-a9a8-47a3b763c2b0",
+      "name": "Send a message6",
+      "webhookId": "7786539f-95d2-4681-9d72-372171fb6f08",
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        2448,
+        864
+      ],
+      "id": "df3342d9-10ef-4527-a1ec-a2c71b4db0c4",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an assistant that processes an incoming message and responds in one of two ways depending on its content.\nMessage: {{ $json.text }}\nFirst, decide whether the message is a request to create a task or to-do item.\nIf it IS a task/to-do request:\n\nConvert it into a clean, professional to-do list.\nFormat each item as a bullet point.\nKeep the wording clear, action oriented, and professional.\nDo not add commentary before or after the list unless it adds useful context.\n\nIf it is NOT a task/to-do request:\nSimply reply to the query as a helpful assistant.\nKeep the reply concise and direct.\nDo not mention to-do lists or ask whether the user wants one.\n\nFormatting rules (apply to every response):\nNever use em dashes.\nFor bold text, use Slack formatting with single asterisks like this, never double asterisks like this.",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2496,
+        688
+      ],
+      "id": "6d0cb4d2-9114-4c7f-a13d-8a08a1a83bcf",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.files[0].url_private_download }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "slackApi",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "4e5c94d5-be58-4e21-b442-ce85231f846d",
+      "name": "Download Audio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2032,
+        688
+      ],
+      "credentials": {
+        "slackApi": {
+          "id": "qz9WRPs1A2MqyUtk",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Slack Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check User & Chat ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check User & Chat ID": {
+      "main": [
+        [
+          {
+            "node": "Message Router",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Message Router": {
+      "main": [
+        [
+          {
+            "node": "Download Audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Image Schema",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe Recording": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier Audio": {
+      "main": [
+        [
+          {
+            "node": "Send a message5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier Audio",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Image Schema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Send a message3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Schema": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Analyze Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Image": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Audio": {
+      "main": [
+        [
+          {
+            "node": "Transcribe Recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8973c810-07c5-4ea9-8281-fa5542e36283",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c6e7db0b7144f8ebed20370f0806780467cde7617560ae1e1fb2060d20e4fc7e"
+  },
+  "nodeGroups": [],
+  "id": "OnvR1YBmN7MIpJLI",
+  "tags": []
+}
