@@ -21,8 +21,11 @@ The workflow is designed using n8n's low-code automation platform, making it eas
 **Features**
 
 AI-powered Slack assistant
+
 Responds to Slack @mentions
+
 Supports intelligent text conversations
+
 Accepts and processes voice recordings
 Automatic Speech-to-Text transcription
 Supports image uploads
