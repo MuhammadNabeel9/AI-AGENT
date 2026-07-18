@@ -20,24 +20,38 @@ The workflow is designed using n8n's low-code automation platform, making it eas
 
 **Features**
 
-AI-powered Slack assistant
+1 AI-powered Slack assistant
 
-Responds to Slack @mentions
+2 Responds to Slack @mentions
 
-Supports intelligent text conversations
+3 Supports intelligent text conversations
 
-Accepts and processes voice recordings
-Automatic Speech-to-Text transcription
-Supports image uploads
-AI-powered image understanding using OpenAI Vision
-Context-aware responses using GPT-4o Mini
-Automatic task and to-do list detection
-Converts task requests into structured checklists
-Replies inside the original Slack thread
-Smart message routing based on input type
-Prevents bot self-replies and infinite loops
-Handles unsupported message types gracefully
-Built using n8n's visual workflow automation
-Easy to customize and extend
-Suitable for workplace productivity and business automation
-Low-code solution requiring minimal programming knowledge
+4 Accepts and processes voice recordings
+
+5 Automatic Speech-to-Text transcription
+
+6 Supports image uploads
+
+7 AI-powered image understanding using OpenAI Vision
+
+8 Context-aware responses using GPT-4o Mini
+
+9 Automatic task and to-do list detection
+
+10 Converts task requests into structured checklists
+
+11 Replies inside the original Slack thread
+
+12 Smart message routing based on input type
+
+13 Prevents bot self-replies and infinite loops
+
+14 Handles unsupported message types gracefully
+
+15 Built using n8n's visual workflow automation
+
+16 Easy to customize and extend
+
+17 Suitable for workplace productivity and business automation
+
+18 Low-code solution requiring minimal programming knowledge
