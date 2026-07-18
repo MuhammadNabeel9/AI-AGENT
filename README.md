@@ -18,7 +18,8 @@ For image uploads, the assistant retrieves the image from Slack, downloads it se
 
 The workflow is designed using n8n's low-code automation platform, making it easy to understand, customize, and extend. Its modular architecture allows developers to integrate additional services such as Google Calendar, Notion, Jira, CRM systems, databases, Retrieval-Augmented Generation (RAG), memory modules, and other AI-powered business applications. This makes the project suitable for workplace productivity, team collaboration, customer support, knowledge management, and enterprise automation.
 
-Features
+**Features**
+
 AI-powered Slack assistant
 Responds to Slack @mentions
 Supports intelligent text conversations
