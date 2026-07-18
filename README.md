@@ -55,3 +55,180 @@ The workflow is designed using n8n's low-code automation platform, making it eas
 17 Suitable for workplace productivity and business automation
 
 18 Low-code solution requiring minimal programming knowledge
+
+Step 1: Create an n8n Account
+Visit n8n Cloud
+Sign up or log in.
+Click New Workflow.
+Step 2: Import the Workflow
+Click the ⋮ (three dots) in the workflow editor.
+Select Import from File.
+Choose your JSON workflow.
+Click Open.
+
+After importing, all nodes and their connections will already be connected automatically because the JSON contains the workflow graph.
+
+Step 3: Configure Slack Credentials
+
+Your workflow contains several Slack nodes:
+
+Slack Trigger
+Get a File
+Send Message
+Send Message2
+Send Message3
+Send Message4
+Send Message5
+Send Message6
+
+For each Slack node:
+
+Open the node.
+Click Credential.
+Select Create New Credential.
+Connect your Slack Workspace.
+Authorize the app.
+Save.
+
+If you are using the Slack Trigger, you must also:
+
+Enable Event Subscriptions in your Slack App.
+Copy the webhook URL from the Slack Trigger node.
+Paste it into your Slack App's Request URL.
+Enable the app_mention event.
+Reinstall the Slack app to your workspace after changing permissions.
+Step 4: Configure OpenAI
+
+Open every OpenAI node:
+
+OpenAI Chat Model
+OpenAI Chat Model1
+Transcribe Recording
+Analyze Image
+
+Then:
+
+Click Credential.
+Create a new OpenAI credential.
+Paste your OpenAI API key.
+Save.
+Step 5: Check the Channel ID
+
+Your workflow is configured to work with a specific Slack channel.
+
+Open:
+
+Slack Trigger
+Send Message nodes
+
+Replace the existing Channel ID with your own Slack channel.
+
+Step 6: Activate the Workflow
+
+Click the Active toggle in the top-right corner.
+
+When the workflow is active, n8n starts listening for Slack events automatically.
+
+Step 7: Invite the Bot
+
+Inside Slack:
+
+/invite @YourBotName
+
+Invite the bot to the channel where you want it to respond.
+
+Step 8: Test the Workflow
+Test Text
+@AI What is Artificial Intelligence?
+
+Expected flow:
+
+Slack Trigger
+      ↓
+Check User
+      ↓
+Message Router
+      ↓
+Text Pipeline
+      ↓
+Basic LLM Chain
+      ↓
+Text Classifier
+      ↓
+Slack Reply
+Test Voice
+
+Upload a voice message while mentioning the bot:
+
+@AI
+(voice message)
+
+Flow:
+
+Slack Trigger
+      ↓
+Message Router
+      ↓
+Download Audio
+      ↓
+Transcribe Recording
+      ↓
+Basic LLM Chain
+      ↓
+Text Classifier
+      ↓
+Slack Reply
+Test Image
+
+Upload an image:
+
+@AI What is shown in this image?
+
+Flow:
+
+Slack Trigger
+      ↓
+Message Router
+      ↓
+Get File
+      ↓
+Download Image
+      ↓
+Analyze Image
+      ↓
+Slack Reply
+Step 9: Verify Each Node
+
+Open each node and ensure there are no red warning icons. Confirm:
+
+Slack nodes have valid Slack credentials.
+OpenAI nodes have a valid API key.
+The Slack channel ID is correct.
+The Slack Trigger webhook is verified.
+The workflow is Active.
+Complete Workflow Flow
+User mentions bot in Slack
+           │
+           ▼
+     Slack Trigger
+           │
+           ▼
+ Check User & Chat ID
+           │
+           ▼
+     Message Router
+      ┌────┼─────┐
+      │    │     │
+      ▼    ▼     ▼
+    Text Audio Image
+      │    │     │
+      ▼    ▼     ▼
+  LLM  Speech  Vision
+      │    │     │
+      └────┴─────┘
+           │
+           ▼
+  Task Detection (if needed)
+           │
+           ▼
+ Reply in Slack Thread
