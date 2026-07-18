@@ -263,18 +263,23 @@ User mentions bot in Slack
            │
            ▼
      Message Router
+     
       ┌────┼─────┐
       │    │     │
       ▼    ▼     ▼
     Text Audio Image
+    
       │    │     │
       ▼    ▼     ▼
   LLM  Speech  Vision
+  
       │    │     │
       └────┴─────┘
            │
            ▼
   Task Detection (if needed)
+  
            │
            ▼
  Reply in Slack Thread
+ 
